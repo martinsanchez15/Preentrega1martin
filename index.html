@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet"  href="css/estilo.css">
+</head>
+<body>
+    <h1>Blackjack</h1>
+    <button onclick="mostrarAlerta()">Mostrar Alerta</button>
+    <script>
+        function mostrarAlerta() {
+            alert("¡Hola, Bienvenido a mi pagina,este es mi primer trabajo!");
+        }
+    </script>
+    <button onclick="solicitarNombre()">Ingresar Nombre</button>
+    <script>
+        function solicitarNombre() {
+            var nombre = prompt("Por favor, ingrese su nombre:");
+            
+            if (nombre !== null) {
+                alert("Nombre ingresado: " + nombre);
+            } else {
+                alert("No se ingresó ningún nombre.");
+            }
+        }
+    </script>
+    <h2>Jugar</h2>
+
+    <button onclick="jugarBlackjack()">Jugar</button>
+    <script>
+        function jugarBlackjack() {
+            // Crear una baraja de cartas
+            var cartas = [
+                "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"
+            ];
+    
+            // Obtener dos cartas al azar para el jugador y el crupier
+            var cartaJugador1 = obtenerCartaAleatoria(cartas);
+            var cartaJugador2 = obtenerCartaAleatoria(cartas);
+            var cartaCrupier1 = obtenerCartaAleatoria(cartas);
+            var cartaCrupier2 = obtenerCartaAleatoria(cartas);
+    
+            // Calcular el valor de las cartas del jugador y el crupier
+            var valorJugador = calcularValorCartas([cartaJugador1, cartaJugador2]);
+            var valorCrupier = calcularValorCartas([cartaCrupier1, cartaCrupier2]);
+    
+            // Mostrar las cartas y sus valores
+            alert("Tus cartas: " + cartaJugador1 + " y " + cartaJugador2 + "\nValor: " + valorJugador);
+            alert("Carta del crupier: " + cartaCrupier1);
+    
+            // Simular el turno del crupier
+            while (valorCrupier < 17) {
+                var nuevaCartaCrupier = obtenerCartaAleatoria(cartas);
+                valorCrupier += valorCarta(nuevaCartaCrupier);
+            }
+    
+            // Determinar el resultado del juego
+            var resultado = determinarResultado(valorJugador, valorCrupier);
+            alert("Cartas del crupier: " + cartaCrupier1 + " y " + cartaCrupier2 + "\nValor: " + valorCrupier);
+            alert("Resultado: " + resultado);
+        }
+    
+        function obtenerCartaAleatoria(cartas) {
+            var indice = Math.floor(Math.random() * cartas.length);
+            return cartas[indice];
+        }
+    
+        function valorCarta(carta) {
+            if (carta === "A") {
+                return 11; // Valor especial para el As
+            } else if (carta === "K" || carta === "Q" || carta === "J") {
+                return 10; // Valor de las cartas K, Q y J
+            } else {
+                return parseInt(carta); // Valor numérico de las cartas del 2 al 10
+            }
+        }
+    
+        function calcularValorCartas(cartas) {
+            var valor = 0;
+            var tieneAs = false;
+    
+            for (var i = 0; i < cartas.length; i++) {
+                valor += valorCarta(cartas[i]);
+    
+                // Verificar si hay un As
+                if (cartas[i] === "A") {
+                    tieneAs = true;
+                }
+            }
+    
+            // Si el valor supera 21 y hay un As, reducir el valor del As de 11 a 1
+            if (tieneAs && valor > 21) {
+                valor -= 10;
+            }
+    
+            return valor;
+        }
+    
+        function determinarResultado(valorJugador, valorCrupier) {
+            if (valorJugador > 21) {
+                return "¡Has perdido! Tu valor supera 21.";
+            } else if (valorCrupier > 21 || valorJugador === 21 || (valorJugador < 21 && valorJugador > valorCrupier)) {
+                return "¡Has ganado!";
+            } else if (valorCrupier === valorJugador) {
+                return "Empate.";
+            } else {
+                return "¡Has perdido! El crupier tiene un valor mayor.";
+            }
+        }
+    </script>
+</body>
+</html>
